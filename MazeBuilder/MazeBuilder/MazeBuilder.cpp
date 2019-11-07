@@ -7,8 +7,6 @@ using namespace std;
 
 struct Cell
 {
-	//int x = 0;
-	//int y = 0;
 	bool N = false;
 	bool E = false;
 	bool S = false;
