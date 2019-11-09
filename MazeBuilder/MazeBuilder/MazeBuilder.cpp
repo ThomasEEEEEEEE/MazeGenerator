@@ -29,8 +29,8 @@ struct Coords
 	int y = 0;
 };
 
-const int MazeLen = 80;
-const int MazeWid = 45;
+const int MazeLen = 79;
+const int MazeWid = 44;
 
 class MazeBuilder : public PixelGameEngine
 {
@@ -48,7 +48,7 @@ public:
 
 	bool OnUserCreate() override
 	{
-		srand(time(0));
+		srand(clock());
 		VisitedCells = 1;
 		TileSize = 3;
 		Coords c;
