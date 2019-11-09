@@ -29,8 +29,8 @@ struct Coords
 	int y = 0;
 };
 
-const int MazeLen = 79;
-const int MazeWid = 44;
+const int MazeLen = 80;
+const int MazeWid = 45;
 
 class MazeBuilder : public PixelGameEngine
 {
@@ -45,6 +45,7 @@ public:
 	Cell cells[MazeLen][MazeWid];
 	int VisitedCells;
 	int TileSize;
+	bool Done = false;
 
 	bool OnUserCreate() override
 	{
@@ -140,45 +141,67 @@ public:
 		}
 		else
 		{
-			//end whole program
-			char ch;
-			cin >> ch;
-			return false;
+			Done = true;
 		}
 
 
+		//Borders
+		FillRect(0, 0, MazeLen * (TileSize + 1), 1, BLACK);
+		FillRect(0, 0, 1, MazeWid * (TileSize + 1), BLACK);
+		FillRect((MazeLen) * (TileSize + 1), 0, 1 * (TileSize + 1), (MazeWid) * (TileSize + 1), BLACK);
+		FillRect(0, (MazeWid) * (TileSize + 1), (MazeLen) * (TileSize + 1), 1 * (TileSize + 1), BLACK);
+		
+		//Opening and ending
+		FillRect(0, 1, 1, TileSize, WHITE);
+		FillRect((MazeLen - 1) * (TileSize + 1), (MazeWid - 1) * (TileSize + 1) - TileSize, 1, TileSize, WHITE); //Doesnt work
 
+		//Draw Maze
 		for (int x = 0; x < MazeLen; ++x)
 		{
 			for (int y = 0; y < MazeWid; ++y)
 			{
 				if (Stack.top().x == x && Stack.top().y == y)
 				{
-					FillRect(Stack.top().x * (TileSize + 1), Stack.top().y * (TileSize + 1), TileSize, TileSize, GREEN);
+					FillRect(Stack.top().x * (TileSize + 1) + 1, Stack.top().y * (TileSize + 1) + 1, TileSize, TileSize, GREEN);
 				}
 				else
 				{
 					if (cells[x][y].Visited)
 					{
-						FillRect(x * (TileSize + 1), y * (TileSize + 1), TileSize, TileSize, WHITE);
+						FillRect(x * (TileSize + 1) + 1, y * (TileSize + 1) + 1, TileSize, TileSize, WHITE);
 					}
 					else
 					{
-						FillRect(x * (TileSize + 1), y * (TileSize + 1), TileSize, TileSize, BLUE);
+						FillRect(x * (TileSize + 1) + 1, y * (TileSize + 1) + 1, TileSize, TileSize, BLUE);
 					}
 
 					if (cells[x][y].S == true)
 					{
-						FillRect(x * (TileSize + 1), y * (TileSize + 1) + TileSize, 3, 1, WHITE);
+						FillRect(x * (TileSize + 1) + 1, y * (TileSize + 1) + TileSize + 1, 3, 1, WHITE);
 					}
+					else
+					{
+						FillRect(x * (TileSize + 1) + 1, y * (TileSize + 1) + TileSize + 1, 3, 1, BLACK);
+					}
+
 					if (cells[x][y].E == true)
 					{
-						FillRect(x * (TileSize + 1) + TileSize, y * (TileSize + 1), 1, 3, WHITE);
+						FillRect(x * (TileSize + 1) + TileSize + 1, y * (TileSize + 1) + 1, 1, 3, WHITE);
+					}
+					else
+					{
+						FillRect(x * (TileSize + 1) + TileSize + 1, y * (TileSize + 1) + 1, 1, 3, BLACK);
 					}
 				}
 			}
 		}
 
+		if (Done)
+		{
+			char ch;
+			cin >> ch;
+			return false;
+		}
 		
 		return true;
 	}
@@ -187,7 +210,7 @@ public:
 int main()
 {
 	MazeBuilder mb;
-	if (mb.Construct(320, 180, 4, 4))
+	if (mb.Construct(321, 181, 4, 4))
 		mb.Start();
 
 	return 0;
