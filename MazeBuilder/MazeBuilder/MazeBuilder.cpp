@@ -1,3 +1,11 @@
+/**********************************************************
+ Author: Thomas Eberhart (ThomasEEEEEEEE)
+
+ Description: This program features an automatic maze generator.
+ No user input is taken. Upon startup, the program will
+ automatically generate a unique maze. The mazes will always
+ be solvable and random.
+**********************************************************/
 #define OLC_PGE_APPLICATION
 #include <iostream>
 #include <stack>
@@ -39,7 +47,6 @@ public:
 	{
 		sAppName = "Maze Builder";
 	}
-
 	
 	stack<Coords> Stack;
 	Cell cells[MazeLen][MazeWid];
@@ -63,14 +70,15 @@ public:
 
 	bool OnUserUpdate(float fElapsedTime) override
 	{
-		//this_thread::sleep_for(10ms);
 		Clear(BLACK);
 
+		//Continue until all cells have been visited
 		if (VisitedCells < MazeLen * MazeWid)
 		{
 			vector<Dir> temp;
 			temp.clear();
 
+			//Collect all unvisited valid neighbors
 
 			if (Stack.top().y > 0 && cells[Stack.top().x][Stack.top().y - 1].Visited == false)
 			{
@@ -92,18 +100,19 @@ public:
 				temp.push_back(Dir::W);
 			}
 
-
-
+			//If no valid neighbors then unwind
 			if (temp.empty())
 			{
 				Stack.pop();
 			}
 			else
 			{
+				//Pick a random neighbor
 				int dir = rand() % temp.size();
 				Dir d = temp[dir];
 				Coords c;
 
+				//Add that neighbor
 				switch (d)
 				{
 				case Dir::N:
@@ -150,10 +159,6 @@ public:
 		FillRect(0, 0, 1, MazeWid * (TileSize + 1), BLACK);
 		FillRect((MazeLen) * (TileSize + 1), 0, 1 * (TileSize + 1), (MazeWid) * (TileSize + 1), BLACK);
 		FillRect(0, (MazeWid) * (TileSize + 1), (MazeLen) * (TileSize + 1), 1 * (TileSize + 1), BLACK);
-		
-		//Opening and ending
-		FillRect(0, 1, 1, TileSize, WHITE);
-		FillRect((MazeLen - 1) * (TileSize + 1), (MazeWid - 1) * (TileSize + 1) - TileSize, 1, TileSize, WHITE); //Doesnt work
 
 		//Draw Maze
 		for (int x = 0; x < MazeLen; ++x)
@@ -195,6 +200,9 @@ public:
 				}
 			}
 		}
+		//Opening and ending
+		FillRect(0, 1, 1, TileSize, WHITE);
+		FillRect(ScreenWidth() - 1, ScreenHeight() - TileSize - 1, 1, TileSize, WHITE);
 
 		if (Done)
 		{
